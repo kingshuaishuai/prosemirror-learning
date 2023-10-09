@@ -75,3 +75,8 @@ export const schema = new Schema({
     }
   }
 })
+
+// schema 的 cached 可以用来缓存自己的数据，默认有 domParser 与 domSerializer
+schema.cached.sayHello = function(name: string) {
+  console.log('hello: ', name)
+}

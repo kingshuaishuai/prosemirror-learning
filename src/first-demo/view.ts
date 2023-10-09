@@ -25,5 +25,7 @@ export const setupEditor = (el: HTMLElement | null) => {
     state: editorState
   })
 
+  window.editorView = editorView
+
   console.log('editorView', editorView)
 }
