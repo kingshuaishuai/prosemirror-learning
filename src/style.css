@@ -71,9 +71,11 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  border-color: #646cff;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: #646cff;
+  color: #fff;
 }
 button:focus,
 button:focus-visible {
@@ -93,12 +95,71 @@ button:focus-visible {
   }
 }
 
-#editorContainer {
+
+#editorRoot {
   border: 1px solid #646cffaa;
-  padding: 0px 12px;
+  border-radius: 4px;
+  padding: 6px 12px;
 }
 
 #editorContainer .ProseMirror {
   outline: none;
   caret-color: #646cffaa;
+}
+
+.ProseMirror p {
+  line-height: 26px;
+  margin: 0;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4,
+.ProseMirror h5,
+.ProseMirror h6 {
+  margin: 0;
+  padding: 0;
+}
+
+.ProseMirror blockquote {
+  margin: 16px 0;
+  position: relative;
+  padding-left: 16px;
+  color: #767c85;
+}
+
+.ProseMirror blockquote::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: inline-block;
+  width: 4px;
+  border-radius: 2px;
+  background-color: #e2e6ed;
+}
+
+
+.ProseMirror .block_tile {
+  padding-left: 20px;
+  position: relative;
+}
+.ProseMirror .block_tile::before {
+  content: "+";
+  font-size: 18px;
+  color: #ccc;
+  cursor: move;
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  transform: translateY(-50%);
+}
+
+.ProseMirror .datetime {
+  display: inline-block;
+  padding: 4px;
+  /* border: 1px solid #646cffaa; */
+  border-radius: 4px;
 }
