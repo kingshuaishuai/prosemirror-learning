@@ -43,7 +43,7 @@ export class MenuItem {
 
     btn.classList.add('menu-item')
 
-    btn.innerText = spec.label;
+    btn.innerHTML = spec.label;
 
     this.dom = btn;
   }

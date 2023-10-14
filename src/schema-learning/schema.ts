@@ -176,10 +176,57 @@ export const schema = new Schema({
       ]
     },
     // 删除线 s
+    strike: {
+      toDOM: () => {
+        return ['s', 0]
+      },
+      parseDOM: [
+        { tag: 's' },
+        { tag: 'del', getAttrs: (domNode) => (domNode as HTMLElement).style.textDecoration !== 'line-through' && null },
+        { style: 'text-decoration', getAttrs: (value) => value === 'line-through' && null }
+      ]
+    },
     // 下划线 u
+    underline: {
+      toDOM: () => {
+        return ['u', 0]
+      },
+      parseDOM: [
+        { tag: 'u' },
+        { style: 'text-decoration', getAttrs: (value) => value === 'underline' && null }
+      ]
+    },
     // 上标 sup
+    sup: {
+      spanning: false,
+      excludes: '_',
+      toDOM: () => {
+        return ['sup', 0]
+      },
+      parseDOM: [
+        { tag: 'sup' },
+      ]
+    },
     // 下标 sub
+    sub: {
+      spanning: false,
+      excludes: '_',
+      toDOM: () => {
+        return ['sub', 0]
+      },
+      parseDOM: [
+        { tag: 'sub' },
+      ]
+    },
     // 行内代码 code
+    code: {
+      toDOM: () => {
+        return ['code', { class: 'inline-code' }, 0]
+      },
+      parseDOM: [
+        { tag: 'code[inline-code]' },
+      ]
+    },
     // 字体大小
     // 字体
     // 字体颜色

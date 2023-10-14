@@ -154,3 +154,13 @@ button:focus-visible {
   background-color: #646cffaa;
   color: #fff;
 }
+
+.ProseMirror .inline-code {
+  border: 1px solid #cbd0d9;
+  font-size: .9em;
+  padding: .1em .3em;
+  padding-top: .3em;
+  border-radius: 4px;
+  margin: 0 2px;
+  font-family: "Operator Mono","Fira Code","Source Code Pro","Hack","Lucida Console","Courier New",Menlo,"PingFang SC","Microsoft YaHei","\5FAE\8F6F\96C5\9ED1","\5B8B\4F53","Apple Color Emoji","Segoe UI Emoji",Tahoma,Arial;
+}
