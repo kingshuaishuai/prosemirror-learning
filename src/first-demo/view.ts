@@ -5,6 +5,8 @@ import { keymap } from 'prosemirror-keymap'
 import { baseKeymap } from 'prosemirror-commands'
 import { history, undo, redo } from 'prosemirror-history'
 import { insertBlockquote, insertDatetime, insertHeading, insertParagraph } from '../utils/insertContent'
+import { Toolbar } from '../ui/toolbar'
+import { isAllowBold, isAllowItalic, isBold, isItalic, setBold, toggleBold, toggleItalic, unsetBold } from '../utils/setMark'
 
 export const setupEditor = (el: HTMLElement | null) => {
   if (!el) return;
@@ -26,38 +28,121 @@ export const setupEditor = (el: HTMLElement | null) => {
   
   // 创建编辑器视图实例，并挂在到 el 上
   const editorView = new EditorView(editorRoot, {
-    state: editorState
+    state: editorState,
+    dispatchTransaction(tr) {
+      let newState = editorView.state.apply(tr);
+      editorView.updateState(newState);
+      toolbar.update(editorView, editorView.state)
+    }
   })
 
-  const btnGroup = document.createElement('div');
-  btnGroup.style.marginBottom = '12px';
-  const addParagraphBtn = document.createElement('button');
-  addParagraphBtn.innerText = '添加新段落';
-  addParagraphBtn.addEventListener('click', () => insertParagraph(editorView, '新段落'))
+  const toolbar = new Toolbar(editorView, {
+    groups: [
+      {
+        name: '段落',
+        menus: [
+          {
+            label: '添加段落',
+            handler: (props) => {
+              const { view } = props;
+              insertParagraph(view, '新段落')
+            },
+          },
+          {
+            label: '添加一级标题',
+            handler: (props) => {
+              insertHeading(props.view, '新一级标题')
+            },
+          },
+          {
+            label: '添加 blockquote',
+            handler: (props) => {
+              insertBlockquote(props.view)
+            },
+          },
+          {
+            label: '添加 datetime',
+            handler: (props) => {
+              insertDatetime(props.view, Date.now())
+            },
+          }
+        ]
+      },
+      {
+        name: '格式',
+        menus: [
+          // {
+          //   label: '加粗',
+          //   handler(props) {
+          //     setBold(props.view)
+          //   }
+          // },
+          // {
+          //   label: '取消加粗',
+          //   handler(props) {
+          //     unsetBold(props.view)
+          //   }
+          // }
+          {
+            label: 'B',
+            handler(props) {
+              toggleBold(props.view)
+            },
+            update(view, state, menu) {
+              const disabled = !isAllowBold(view);
+              if (disabled && !menu.getAttribute('disabled')) {
+                menu.setAttribute('disabled', 'true')
+              }
 
-  const addHeadingBtn = document.createElement('button');
-  addHeadingBtn.innerText = '添加新一级标题';
-  addHeadingBtn.addEventListener('click', () => insertHeading(editorView, '新一级标题'))
+              if (!disabled && menu.getAttribute('disabled')) {
+                menu.removeAttribute('disabled')
+              }
 
-  const addBlockquoteBtn = document.createElement('button');
-  addBlockquoteBtn.innerText = '添加 blockquote';
-  addBlockquoteBtn.addEventListener('click', () => insertBlockquote(editorView, 'new blockquote'))
+              const isActive = isBold(view);
+              if (isActive && !menu.classList.contains('is-active')) {
+                menu.classList.add('is-active')
+              }
 
-  const addDatetimeBtn = document.createElement('button');
-  addDatetimeBtn.innerText = '添加 datetime';
-  addDatetimeBtn.addEventListener('click', () => insertDatetime(editorView))
+              if (!isActive && menu.classList.contains('is-active')) {
+                menu.classList.remove('is-active')
+              }
 
-  btnGroup.appendChild(addHeadingBtn)
-  btnGroup.appendChild(addParagraphBtn)
-  btnGroup.appendChild(addBlockquoteBtn)
-  btnGroup.appendChild(addDatetimeBtn)
+              view.focus();
+            }
+          },
+          {
+            label: 'I',
+            handler(props) {
+              toggleItalic(props.view)
+            },
+            update(view, state, menu) {
+              const disabled = !isAllowItalic(view);
+              if (disabled && !menu.getAttribute('disabled')) {
+                menu.setAttribute('disabled', 'true')
+              }
 
-  const fragment = document.createDocumentFragment()
-  fragment.appendChild(btnGroup)
-  fragment.appendChild(editorRoot)
+              if (!disabled && menu.getAttribute('disabled')) {
+                menu.removeAttribute('disabled')
+              }
 
-  el.appendChild(fragment)
+              const isActive = isItalic(view);
+              if (isActive && !menu.classList.contains('is-active')) {
+                menu.classList.add('is-active')
+              }
+
+              if (!isActive && menu.classList.contains('is-active')) {
+                menu.classList.remove('is-active')
+              }
+
+              view.focus();
+            }
+          }
+        ]
+      }
+    ]
+  })
   
+  el.appendChild(editorRoot)
 
   // @ts-ignore
   window.editorView = editorView

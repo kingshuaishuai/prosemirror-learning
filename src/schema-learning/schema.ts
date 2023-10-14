@@ -44,6 +44,7 @@ export const schema = new Schema({
       content: 'inline*',
       group: 'block',
       defining: true,
+      marks: 'italic',
       toDOM: (node) => {
         const tag = 'h' + node.attrs.level
         return [tag, 0]
@@ -122,6 +123,119 @@ export const schema = new Schema({
             return {
               timestamp: null
             }
+          }
+        }
+      ]
+    }
+  },
+  marks: {
+    // 常见的 mark
+    // 加粗 strong(语义化)
+    bold: {
+      toDOM: () => {
+        return ['strong', 0]
+      },
+      parseDOM: [
+        { tag: 'strong' },
+        { tag: 'b', getAttrs: (domNode) => (domNode as HTMLElement).style.fontWeight !== 'normal' && null },
+        { style: 'font-weight', getAttrs: (value) => /^(bold(er)?|[5-9]\d{2})$/.test(value as string) && null }
+      ]
+    },
+    // 斜体 em
+    italic: {
+      toDOM: () => {
+        return ['em', 0]
+      },
+      parseDOM: [
+        { tag: 'em' },
+        { tag: 'i', getAttrs: (domNode) => (domNode as HTMLElement).style.fontStyle !== 'normal' && null},
+        { style: 'font-style=italic' },
+      ]
+    },
+    // 链接
+    link: {
+      attrs: {
+        href: {
+          default: null
+        },
+        ref: {
+          default: 'noopener noreferrer nofollow'
+        },
+        target: {
+          default: '_blank'
+        },
+      },
+      toDOM: (mark) => {
+        const { href, ref, target } = mark.attrs;
+        return ['a', { href, ref, target  }, 0]
+      },
+      parseDOM: [
+        {
+          tag: 'a[href]:not([href *= "javascript:" i])'
+        }
+      ]
+    },
+    // 删除线 s
+    // 下划线 u
+    // 上标 sup
+    // 下标 sub
+    // 行内代码 code
+    // 字体大小
+    // 字体
+    // 字体颜色
+    // 背景颜色
+    // 对齐方式
+    fontStyle: {
+      attrs: {
+        color: {
+          default: null
+        },
+        backgroundColor: {
+          default: null
+        },
+        fontSize: {
+          default: null
+        },
+        fontFamily: {
+          default: null
+        }
+      },
+      toDOM: (mark) => {
+        const span = document.createElement('span');
+        span.style.color = mark.attrs.color ?? undefined;
+        span.style.backgroundColor = mark.attrs.backgroundColor ?? undefined;
+        span.style.fontSize = mark.attrs.fontSize ?? undefined;
+        span.style.fontFamily = mark.attrs.fontFamily ?? undefined;
+
+        return {
+          dom: span,
+          contentDOM: span
+        }
+      },
+      parseDOM: [
+        {
+          tag: 'span',
+          getAttrs: (domNode) => {
+            const { color, backgroundColor, fontSize, fontFamily } = (domNode as HTMLElement).style;
+            
+            let attrs = Object.assign(Object.create(null), {
+              color,
+              backgroundColor,
+              fontSize,
+              fontFamily
+            });
+            
+            attrs = Object.keys(attrs).reduce<Record<string, string>>((result, key) => {
+              if (attrs[key]) {
+                result[key] = attrs[key]
+              }
+              return result;
+            }, {});
+
+            if (Object.keys(attrs).length) {
+              return attrs;
+            }
+            return false;
           }
         }
       ]
