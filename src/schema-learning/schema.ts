@@ -1,4 +1,12 @@
+import crel from "crelt";
 import { Schema } from "prosemirror-model";
+
+const createZeroWidthSpace = () => {
+  const s = document.createTextNode('\u200B');
+  // s.innerHTML = '&ZeroWidthSpace;';
+  // s.contentEditable = "true"
+  return s;
+};
 
 export const schema = new Schema({
   nodes: {
@@ -30,6 +38,7 @@ export const schema = new Schema({
       content: 'inline*',
       group: 'block',
       selectable: false,
+      // whitespace: 'pre',
       toDOM: () => {
         return ['p', 0]
       },

@@ -78,6 +78,9 @@ button:focus-visible {
 #editorContainer .ProseMirror {
   outline: none;
   caret-color: #646cffaa;
+  position: relative;
+  /* --prosemirror-virtual-cursor-color: #646cffaa; */
+  /* overflow: hidden; */
 }
 
 .ProseMirror p {
@@ -135,6 +138,7 @@ button:focus-visible {
   padding: 4px;
   /* border: 1px solid #646cffaa; */
   border-radius: 4px;
+  border: 1px solid transparent;
 }
 
 .toolbar {
@@ -163,4 +167,22 @@ button:focus-visible {
   border-radius: 4px;
   margin: 0 2px;
   font-family: "Operator Mono","Fira Code","Source Code Pro","Hack","Lucida Console","Courier New",Menlo,"PingFang SC","Microsoft YaHei","\5FAE\8F6F\96C5\9ED1","\5B8B\4F53","Apple Color Emoji","Segoe UI Emoji",Tahoma,Arial;
+}
+
+.ProseMirror .ProseMirror-selectednode {
+  border: 1px solid #646cffaa;
+}
+
+.ProseMirror p {
+  white-space: pre-wrap;
+}
+
+.editor-footer {
+  font-size: 12px;
+  text-align: right;
+  background-color: #646cff33;
+  border-radius: 2px;
+  line-height: 2;
+  padding: 0 8px;
+  margin: 6px -12px -6px;
 }

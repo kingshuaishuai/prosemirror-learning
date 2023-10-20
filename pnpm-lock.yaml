@@ -11,6 +11,9 @@ dependencies:
   prosemirror-commands:
     specifier: ^1.5.2
     version: 1.5.2
+  prosemirror-gapcursor:
+    specifier: ^1.3.2
+    version: 1.3.2
   prosemirror-history:
     specifier: ^1.3.2
     version: 1.3.2
@@ -26,6 +29,9 @@ dependencies:
   prosemirror-view:
     specifier: ^1.32.0
     version: 1.32.0
+  prosemirror-virtual-cursor:
+    specifier: ^0.4.1
+    version: 0.4.1(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.32.0)
 
 devDependencies:
   typescript:
@@ -308,6 +314,15 @@ packages:
       prosemirror-transform: 1.8.0
     dev: false
 
+  /prosemirror-gapcursor@1.3.2:
+    resolution: {integrity: sha512-wtjswVBd2vaQRrnYZaBCbyDqr232Ed4p2QPtRIUK5FuqHYKGWkEwl08oQM4Tw7DOR0FsasARV5uJFvMZWxdNxQ==}
+    dependencies:
+      prosemirror-keymap: 1.2.2
+      prosemirror-model: 1.19.3
+      prosemirror-state: 1.4.3
+      prosemirror-view: 1.32.0
+    dev: false
+
   /prosemirror-history@1.3.2:
     resolution: {integrity: sha512-/zm0XoU/N/+u7i5zepjmZAEnpvjDtzoPWW6VmKptcAnPadN/SStsBjMImdCEbb3seiNTpveziPTIrXQbHLtU1g==}
     dependencies:
@@ -350,6 +365,25 @@ packages:
       prosemirror-model: 1.19.3
       prosemirror-state: 1.4.3
       prosemirror-transform: 1.8.0
+    dev: false
+
+  /prosemirror-virtual-cursor@0.4.1(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)(prosemirror-view@1.32.0):
+    resolution: {integrity: sha512-GooZQEXVxap58daaDV8n+urYxbADA525O2VrkXttve/xQwAi1nvFMILtzKQa6st+y3fJ6lxDtOHKIdBpSW1NOA==}
+    peerDependencies:
+      prosemirror-model: ^1.0.0
+      prosemirror-state: ^1.0.0
+      prosemirror-view: ^1.0.0
+    peerDependenciesMeta:
+      prosemirror-model:
+        optional: true
+      prosemirror-state:
+        optional: true
+      prosemirror-view:
+        optional: true
+    dependencies:
+      prosemirror-model: 1.19.3
+      prosemirror-state: 1.4.3
+      prosemirror-view: 1.32.0
     dev: false
 
   /rollup@3.29.4:

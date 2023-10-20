@@ -15,6 +15,7 @@ export const schema = new Schema({
       group: 'block',
       // 渲染为 html 时候，使用 p 标签渲染，第二个参数 0 念做 “洞”，类似 vue 中 slot 插槽的概念，
       // 证明它有子节点，以后子节点就填充在 p 标签中
+      whitespace: 'pre',
       toDOM: () => {
         return ['p', 0]
       },

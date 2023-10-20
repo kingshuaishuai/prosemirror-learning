@@ -1,7 +1,7 @@
 // 写文章时候重新写的代码
 // TODO: 一些直接使用 selection 的 $from $to 需要更新为 通过 ranges 遍历
 import { Attrs, MarkType, Schema } from "prosemirror-model";
-import { TextSelection } from 'prosemirror-state';
+import { Command, TextSelection } from 'prosemirror-state';
 import { EditorView } from "prosemirror-view";
 
 function getMarkType(markType: MarkType | string, schema: Schema) {
@@ -158,4 +158,11 @@ export function canSetMark(view: EditorView, markType: MarkType | string) {
     }
   }
   return canSet;
+}
+
+export const toggleBoldCmd:Command = (state, dispatch, view) => {
+  if (view) {
+    return toggleMark(view, 'bold')
+  }
+  return false;
 }
