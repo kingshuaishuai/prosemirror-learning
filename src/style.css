@@ -173,10 +173,6 @@ button:focus-visible {
   border: 1px solid #646cffaa;
 }
 
-.ProseMirror p {
-  white-space: pre-wrap;
-}
-
 .editor-footer {
   font-size: 12px;
   text-align: right;
@@ -185,4 +181,9 @@ button:focus-visible {
   line-height: 2;
   padding: 0 8px;
   margin: 6px -12px -6px;
+}
+
+.comment-decoration {
+  background-color: yellow;
+  font-style: italic;
 }

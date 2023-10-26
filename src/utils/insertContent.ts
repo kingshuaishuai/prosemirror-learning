@@ -1,6 +1,7 @@
 import { EditorView } from "prosemirror-view";
 import { schema } from '../schema-learning/schema';
 import { Command, EditorState } from "prosemirror-state";
+import { findParentNode } from 'prosemirror-utils'
 
 type Schema = typeof schema;
 
@@ -34,6 +35,10 @@ export function insertParagraph(editorView: EditorView, content: string) {
 export const insertParagraphCommand: Command = (state, dispatch) => {
   const { tr, schema } = state;
   const { block_tile, paragraph } = schema.nodes;
+
+  const node = findParentNode(node => ['code_block', 'blockquote'].includes(node.type.name))(state.selection);
+
+  if (node) return false;
 
   const newLine = block_tile.create({}, paragraph.create())
 

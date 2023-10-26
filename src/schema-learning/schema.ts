@@ -1,12 +1,5 @@
-import crel from "crelt";
 import { Schema } from "prosemirror-model";
-
-const createZeroWidthSpace = () => {
-  const s = document.createTextNode('\u200B');
-  // s.innerHTML = '&ZeroWidthSpace;';
-  // s.contentEditable = "true"
-  return s;
-};
+import { codeBlock } from './codeblock'
 
 export const schema = new Schema({
   nodes: {
@@ -135,7 +128,8 @@ export const schema = new Schema({
           }
         }
       ]
-    }
+    },
+    code_block: codeBlock
   },
   marks: {
     // 常见的 mark

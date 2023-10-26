@@ -1,8 +1,9 @@
-import { EditorView } from 'prosemirror-view'
+import crelt from 'crelt';
+import { Decoration, DecorationSet, EditorView } from 'prosemirror-view'
 import { EditorState, Plugin, PluginKey } from 'prosemirror-state'
 import { schema } from '../schema-learning/schema'
 import { keymap } from 'prosemirror-keymap'
-import { baseKeymap } from 'prosemirror-commands'
+import { baseKeymap, chainCommands } from 'prosemirror-commands'
 import { history, undo, redo } from 'prosemirror-history'
 import { insertBlockquote, insertDatetime, insertHeading, insertParagraph, insertParagraphCommand } from '../utils/insertContent'
 import { Toolbar } from '../ui/toolbar'
@@ -12,6 +13,21 @@ import 'prosemirror-virtual-cursor/style/virtual-cursor.css'
 import { gapCursor } from 'prosemirror-gapcursor'
 import 'prosemirror-gapcursor/style/gapcursor.css'
 import { docChangedTimesPlugin } from '../plugins/doc-changed-times'
+import 'prosemirror-view/style/prosemirror.css'
+import { codeBlockViewConstructor, createCodeBlockCmd } from '../schema-learning/codeblock'
+import '../schema-learning/codeblock.css'// import "highlight.js/styles/stackoverflow-dark.css";
+import "highlight.js/styles/atom-one-dark-reasonable.css";
+import { highlightCodePlugin, selectAllCodeCmd } from '../plugins/code-highlight/core';
+
+
+function createCommentNode(commentText: string) {
+  const commentNode = document.createElement("div");
+  commentNode.className = "comment";
+  commentNode.textContent = commentText;
+  return commentNode;
+}
+
+
 // import { isAllowBold, isAllowItalic, isBold, isItalic, toggleBold, toggleItalic } from '../utils/setMark'
 
 export const setupEditor = (el: HTMLElement | null) => {
@@ -20,13 +36,38 @@ export const setupEditor = (el: HTMLElement | null) => {
   const editorRoot = document.createElement('div');
   editorRoot.id = 'editorRoot';
 
-  // 根据 schema 定义，创建 editorState 数据实例
+
+//   var doc = schema.nodeFromJSON({
+//     "type": "doc",
+//     "content": [
+//         {
+//             "type": "block_tile",
+//             "content": [
+//                 {
+//                     "type": "paragraph",
+//                     "content": [
+//                         {
+//                             "type": "text",
+//                             "text": "123456789"
+//                         }
+//                     ]
+//                 }
+//             ]
+//         }
+//     ]
+// })
+
+// 根据 schema 定义，创建 editorState 数据实例
   const editorState = EditorState.create({
     schema,
     plugins: [
+      // highlightPlugin(hljs),
+      // gapCursor(),
+      highlightCodePlugin(),
       keymap({
         ...baseKeymap,
-        Enter: insertParagraphCommand
+        'Mod-a': chainCommands(selectAllCodeCmd, baseKeymap['Mod-a']),
+        Enter: chainCommands(insertParagraphCommand, baseKeymap['Enter'])
       }),
       // 接入 history 插件，提供输入历史栈功能
       history(),
@@ -67,6 +108,15 @@ export const setupEditor = (el: HTMLElement | null) => {
                   handler: (props) => {
                     insertDatetime(props.view, Date.now())
                   },
+                },
+                {
+                  label: '添加代码块',
+                  handler: ({ state, dispatch, view }) => {
+                    createCodeBlockCmd(state, dispatch, view)
+                    setTimeout(() => {
+                      view.focus()
+                    })
+                  }
                 }
               ]
             },
@@ -148,6 +198,14 @@ export const setupEditor = (el: HTMLElement | null) => {
   // 创建编辑器视图实例，并挂在到 el 上
   const editorView = new EditorView(editorRoot, {
     state: editorState,
+    nodeViews: {
+      code_block: codeBlockViewConstructor
+    },
+    // decorations(state) {
+    //   console.log(">>>> decs")
+    //   const decoration = Decoration.inline(5,10, { style: 'color: red' });
+    //   return DecorationSet.create(state.doc, [decoration]);
+    // }
     // dispatchTransaction(tr) {
     //   let newState = editorView.state.apply(tr);
     //   editorView.updateState(newState);
@@ -178,7 +236,7 @@ export const setupEditor = (el: HTMLElement | null) => {
       menuDom.classList.remove('is-active')
     }
   }
-  
+
   el.appendChild(editorRoot)
 
   // @ts-ignore
