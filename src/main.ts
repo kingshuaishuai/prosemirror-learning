@@ -1,5 +1,6 @@
 import './style.css'
 import { setupEditor } from './first-demo/view'
+import RopeSequence from "rope-sequence";
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = /*html*/`
   <div>

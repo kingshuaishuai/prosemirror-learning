@@ -30,6 +30,8 @@ export function insertParagraph(editorView: EditorView, content: string) {
 
   // 派发更新
   dispatch(tr);
+
+  editorView.focus();
 }
 
 export const insertParagraphCommand: Command = (state, dispatch) => {

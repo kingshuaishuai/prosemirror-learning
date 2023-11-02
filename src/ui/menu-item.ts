@@ -14,6 +14,7 @@ import { EditorView } from 'prosemirror-view'
 export interface MenuItemSpec {
   class?: string;
   label: string;
+  attrs?: Record<string, string>,
   handler: (
     props: {
       view: EditorView;
@@ -41,9 +42,17 @@ export class MenuItem {
       }
     })
 
-    btn.classList.add('menu-item')
+    btn.classList.add('menu-item');
 
     btn.innerHTML = spec.label;
+
+    const attrs = spec.attrs || {};
+
+    Object.entries(attrs).forEach(([k, v]) => {
+      if (k !== 'class') {
+        btn.setAttribute(k, v)
+      }
+    })
 
     this.dom = btn;
   }

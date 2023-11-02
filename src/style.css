@@ -187,3 +187,15 @@ button:focus-visible {
   background-color: yellow;
   font-style: italic;
 }
+
+.ProseMirror table {
+  border: 1px solid #646cffaa;
+}
+
+.ProseMirror tr {
+  border: 1px solid #646cffaa;
+}
+
+.ProseMirror td {
+  border: 1px solid #646cffaa;
+}

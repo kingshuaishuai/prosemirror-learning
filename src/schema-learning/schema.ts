@@ -1,5 +1,24 @@
+import { EditorView } from 'prosemirror-view';
 import { Schema } from "prosemirror-model";
+import { tableNodes } from 'prosemirror-tables';
 import { codeBlock } from './codeblock'
+
+const { table, table_cell, table_header, table_row} = tableNodes({
+  tableGroup: 'block',
+  cellContent: 'block+',
+  cellAttributes: {
+    background: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.backgroundColor || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value)
+          attrs.style = (attrs.style || '') + `background-color: ${value};`;
+      },
+    },
+  }
+})
 
 export const schema = new Schema({
   nodes: {
@@ -11,7 +30,7 @@ export const schema = new Schema({
       group: 'tile',
       inline: false,
       draggable: true,
-      selectable: false,
+      selectable: true,
       toDOM: () => {
         const blockTile = document.createElement('div');
         blockTile.classList.add('block_tile');
@@ -30,7 +49,7 @@ export const schema = new Schema({
     paragraph: {
       content: 'inline*',
       group: 'block',
-      selectable: false,
+      // selectable: false,
       // whitespace: 'pre',
       toDOM: () => {
         return ['p', 0]
@@ -129,7 +148,11 @@ export const schema = new Schema({
         }
       ]
     },
-    code_block: codeBlock
+    code_block: codeBlock,
+    table,
+    table_cell,
+    table_header,
+    table_row
   },
   marks: {
     // 常见的 mark
@@ -293,3 +316,22 @@ export const schema = new Schema({
   },
   topNode: 'doc'
 })
+
+export function createTable(view: EditorView, row: number, col: number) {
+  const { state } = view;
+  const schema = state.schema;
+  const rows = Array
+    .from({length: row})
+    .map(() => schema.nodes.table_row.create({}, 
+      Array.from({length: col})
+        .map(() => schema.nodes.table_cell.create({}, schema.nodes.paragraph.create()))
+    ))
+  const tableNode = schema.nodes.table.create({}, rows);
+  const blockTile = schema.nodes.block_tile.create({}, tableNode);
+  
+  const tr = state.tr.replaceSelectionWith(blockTile)
+
+  view.dispatch(tr)
+}
+
+console.log("schema", schema)
